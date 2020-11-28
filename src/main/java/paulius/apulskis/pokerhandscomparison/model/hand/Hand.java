@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.toList;
 public class Hand {
 
     private final List<Card> cards;
+    private HandRanking handRanking;
 
     private Hand(List<Card> cards) {
         this.cards = cards;
@@ -16,6 +17,15 @@ public class Hand {
 
     public List<Card> getCards() {
         return cards;
+    }
+
+    public HandRanking getHandRanking() {
+        return handRanking;
+    }
+
+    public Hand setHandRanking(HandRanking handRanking) {
+        this.handRanking = handRanking;
+        return this;
     }
 
     public static Hand createHand(List<Card> cards) {

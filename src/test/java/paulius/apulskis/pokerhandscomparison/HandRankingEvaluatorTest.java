@@ -7,9 +7,9 @@ import paulius.apulskis.pokerhandscomparison.model.hand.HandRanking;
 import static org.junit.Assert.assertEquals;
 import static paulius.apulskis.pokerhandscomparison.utils.values.Hands.*;
 
-public class HandParserTest {
+public class HandRankingEvaluatorTest {
 
-    private final HandParser parser = new HandParser();
+    private final HandRankingEvaluator handRankingEvaluator = new HandRankingEvaluator();
 
     @Test
     public void parse_royalFlush() {
@@ -49,29 +49,29 @@ public class HandParserTest {
 
     @Test
     public void parse_threeOfKind() {
-        var ranking = parser.parse(threeOfKind1());
+        var ranking = getHandRanking(threeOfKind1());
         assertEquals(HandRanking.THREE_OF_A_KIND, ranking);
     }
 
     @Test
     public void parse_twoPair() {
-        var ranking = parser.parse(twoPair());
+        var ranking = getHandRanking(twoPair1());
         assertEquals(HandRanking.TWO_PAIR, ranking);
     }
 
     @Test
     public void parse_pair() {
-        var ranking = parser.parse(pair());
+        var ranking = getHandRanking(pair1());
         assertEquals(HandRanking.PAIR, ranking);
     }
 
     @Test
     public void parse_highCard() {
-        var ranking = parser.parse(highCard());
+        var ranking = getHandRanking(highCard1());
         assertEquals(HandRanking.HIGH_CARD, ranking);
     }
 
     private HandRanking getHandRanking(Hand straight) {
-        return parser.parse(straight);
+        return handRankingEvaluator.evaluate(straight);
     }
 }

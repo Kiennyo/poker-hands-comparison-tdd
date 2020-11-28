@@ -1,21 +1,22 @@
 package paulius.apulskis.pokerhandscomparison;
 
-import paulius.apulskis.pokerhandscomparison.model.card.Card;
 import paulius.apulskis.pokerhandscomparison.model.card.CardValue;
 import paulius.apulskis.pokerhandscomparison.model.hand.Hand;
 import paulius.apulskis.pokerhandscomparison.model.hand.HandRanking;
+import paulius.apulskis.pokerhandscomparison.model.utils.CardHelpers;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class HandParser {
+public class HandRankingEvaluator {
 
+    public static final int PAIR = 2;
     private static final int TWO_PAIR = 2;
-    private static final int FOUR_OF_KIND = 4;
-    private static final int THREE_OF_KIND = 3;
+    public static final int FOUR_OF_KIND = 4;
+    public static final int THREE_OF_KIND = 3;
     private static final int FULL_HOUSE_GROUPS = 2;
 
-    public HandRanking parse(Hand hand) {
+    public HandRanking evaluate(Hand hand) {
         if (isRoyalFlush(hand)) {
             return HandRanking.ROYAL_FLUSH;
         } else if (isStraightFlush(hand)) {
@@ -56,7 +57,8 @@ public class HandParser {
     private boolean isStraight(Hand hand) {
         var cards = hand.getCards();
         for (int i = 1; i < cards.size(); i++) {
-            if (cards.get(i - 1).getCardsValue() + 1 != cards.get(i).getCardsValue()) {
+            boolean isPreviousAndCurrentConsecutive = cards.get(i - 1).getCardsValue() + 1 != cards.get(i).getCardsValue();
+            if (isPreviousAndCurrentConsecutive) {
                 return false;
             }
         }
@@ -64,25 +66,25 @@ public class HandParser {
     }
 
     private boolean isFourOfKind(Hand hand) {
-        var cardsGroup = getCardsValueGroupCount(hand);
+        var cardsGroup = CardHelpers.groupCardsByValue(hand.getCards());
         return cardsGroup.entrySet()
                 .stream()
                 .anyMatch(e -> e.getValue() == FOUR_OF_KIND);
     }
 
     private boolean isFullHouse(Hand hand) {
-        var cardsGroup = getCardsValueGroupCount(hand);
+        var cardsGroup = CardHelpers.groupCardsByValue(hand.getCards());
         return cardsGroup.size() == FULL_HOUSE_GROUPS;
     }
 
     private boolean isThreeOfKind(Hand hand) {
-        return getCardsValueGroupCount(hand).entrySet()
+        return CardHelpers.groupCardsByValue(hand.getCards()).entrySet()
                 .stream()
                 .anyMatch(e -> e.getValue() == THREE_OF_KIND);
     }
 
     private boolean isTwoPair(Hand hand) {
-        var cardsGroup = getCardsValueGroupCount(hand);
+        var cardsGroup = CardHelpers.groupCardsByValue(hand.getCards());
         var cardGroupCount = cardsGroup.entrySet()
                 .stream()
                 .collect(Collectors.groupingBy(Map.Entry::getValue, Collectors.counting()));
@@ -90,13 +92,7 @@ public class HandParser {
     }
 
     private boolean isPair(Hand hand) {
-        var cardsGroup = getCardsValueGroupCount(hand);
-        return cardsGroup.containsValue((long) TWO_PAIR);
-    }
-
-    private Map<Integer, Long> getCardsValueGroupCount(Hand hand) {
-        return hand.getCards()
-                .stream()
-                .collect(Collectors.groupingBy(Card::getCardsValue, Collectors.counting()));
+        var cardsGroup = CardHelpers.groupCardsByValue(hand.getCards());
+        return cardsGroup.containsValue((long) PAIR);
     }
 }
