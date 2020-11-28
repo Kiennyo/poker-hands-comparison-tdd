@@ -2,7 +2,7 @@ package paulius.apulskis.pokerhandscomparison;
 
 import paulius.apulskis.pokerhandscomparison.model.card.Card;
 import paulius.apulskis.pokerhandscomparison.model.hand.Hand;
-import paulius.apulskis.pokerhandscomparison.model.utils.CardHelpers;
+import paulius.apulskis.pokerhandscomparison.utils.CardUtils;
 
 import java.util.*;
 
@@ -30,8 +30,8 @@ public class HandComparer {
     }
 
     private int compareFourOfKindHands(Hand handOne, Hand handTwo) {
-        var groupedHandOneValues = CardHelpers.groupCardsByValue(handOne.getCards());
-        var groupedHandTwoValues = CardHelpers.groupCardsByValue(handTwo.getCards());
+        var groupedHandOneValues = CardUtils.groupCardsByValue(handOne.getCards());
+        var groupedHandTwoValues = CardUtils.groupCardsByValue(handTwo.getCards());
         var handOneFourOfKindValue = groupedHandOneValues.entrySet().stream()
                 .filter(e -> e.getValue() == HandRankingEvaluator.FOUR_OF_KIND)
                 .findFirst().map(Map.Entry::getKey)
@@ -59,8 +59,8 @@ public class HandComparer {
     }
 
     private int compareThreeOfKindHands(Hand handOne, Hand handTwo) {
-        var groupedHandOneValues = CardHelpers.groupCardsByValue(handOne.getCards());
-        var groupedHandTwoValues = CardHelpers.groupCardsByValue(handTwo.getCards());
+        var groupedHandOneValues = CardUtils.groupCardsByValue(handOne.getCards());
+        var groupedHandTwoValues = CardUtils.groupCardsByValue(handTwo.getCards());
 
         var handOneThreeOfKindValue = groupedHandOneValues.entrySet().stream()
                 .filter(e -> e.getValue().intValue() == HandRankingEvaluator.THREE_OF_KIND)
@@ -118,8 +118,8 @@ public class HandComparer {
     }
 
     private int compareTwoPairHands(Hand handOne, Hand handTwo) {
-        var groupedHandOneValues = CardHelpers.groupCardsByValue(handOne.getCards());
-        var groupedHandTwoValues = CardHelpers.groupCardsByValue(handTwo.getCards());
+        var groupedHandOneValues = CardUtils.groupCardsByValue(handOne.getCards());
+        var groupedHandTwoValues = CardUtils.groupCardsByValue(handTwo.getCards());
         var highestHandOnePairCard = groupedHandOneValues.entrySet().stream()
                 .filter(e -> e.getValue() > 1)
                 .max(Map.Entry.comparingByKey())
@@ -140,8 +140,8 @@ public class HandComparer {
     }
 
     private static int comparePairHands(Hand handOne, Hand handTwo) {
-        var groupedHandOneValues = CardHelpers.groupCardsByValue(handOne.getCards());
-        var groupedHandTwoValues = CardHelpers.groupCardsByValue(handTwo.getCards());
+        var groupedHandOneValues = CardUtils.groupCardsByValue(handOne.getCards());
+        var groupedHandTwoValues = CardUtils.groupCardsByValue(handTwo.getCards());
         var handOnePairValue = groupedHandOneValues.entrySet().stream()
                 .filter(e -> e.getValue().intValue() == HandRankingEvaluator.PAIR)
                 .map(Map.Entry::getKey)
@@ -172,8 +172,8 @@ public class HandComparer {
     }
 
     private int compareFullHouseHands(Hand handOne, Hand handTwo) {
-        var groupedHandOneValues = CardHelpers.groupCardsByValue(handOne.getCards());
-        var groupedHandTwoValues = CardHelpers.groupCardsByValue(handTwo.getCards());
+        var groupedHandOneValues = CardUtils.groupCardsByValue(handOne.getCards());
+        var groupedHandTwoValues = CardUtils.groupCardsByValue(handTwo.getCards());
         var highestHandOneTriple = groupedHandOneValues.entrySet().stream()
                 .filter(e -> e.getValue().intValue() == HandRankingEvaluator.THREE_OF_KIND)
                 .findFirst()

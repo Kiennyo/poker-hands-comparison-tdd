@@ -3,7 +3,7 @@ package paulius.apulskis.pokerhandscomparison;
 import paulius.apulskis.pokerhandscomparison.model.card.CardValue;
 import paulius.apulskis.pokerhandscomparison.model.hand.Hand;
 import paulius.apulskis.pokerhandscomparison.model.hand.HandRanking;
-import paulius.apulskis.pokerhandscomparison.model.utils.CardHelpers;
+import paulius.apulskis.pokerhandscomparison.utils.CardUtils;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -66,25 +66,25 @@ public class HandRankingEvaluator {
     }
 
     private boolean isFourOfKind(Hand hand) {
-        var cardsGroup = CardHelpers.groupCardsByValue(hand.getCards());
+        var cardsGroup = CardUtils.groupCardsByValue(hand.getCards());
         return cardsGroup.entrySet()
                 .stream()
                 .anyMatch(e -> e.getValue() == FOUR_OF_KIND);
     }
 
     private boolean isFullHouse(Hand hand) {
-        var cardsGroup = CardHelpers.groupCardsByValue(hand.getCards());
+        var cardsGroup = CardUtils.groupCardsByValue(hand.getCards());
         return cardsGroup.size() == FULL_HOUSE_GROUPS;
     }
 
     private boolean isThreeOfKind(Hand hand) {
-        return CardHelpers.groupCardsByValue(hand.getCards()).entrySet()
+        return CardUtils.groupCardsByValue(hand.getCards()).entrySet()
                 .stream()
                 .anyMatch(e -> e.getValue() == THREE_OF_KIND);
     }
 
     private boolean isTwoPair(Hand hand) {
-        var cardsGroup = CardHelpers.groupCardsByValue(hand.getCards());
+        var cardsGroup = CardUtils.groupCardsByValue(hand.getCards());
         var cardGroupCount = cardsGroup.entrySet()
                 .stream()
                 .collect(Collectors.groupingBy(Map.Entry::getValue, Collectors.counting()));
@@ -92,7 +92,7 @@ public class HandRankingEvaluator {
     }
 
     private boolean isPair(Hand hand) {
-        var cardsGroup = CardHelpers.groupCardsByValue(hand.getCards());
+        var cardsGroup = CardUtils.groupCardsByValue(hand.getCards());
         return cardsGroup.containsValue((long) PAIR);
     }
 }

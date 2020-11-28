@@ -1,4 +1,4 @@
-package paulius.apulskis.pokerhandscomparison.model.utils;
+package paulius.apulskis.pokerhandscomparison.utils;
 
 import paulius.apulskis.pokerhandscomparison.model.card.Card;
 
@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class CardHelpers {
+public class CardUtils {
 
-    private CardHelpers() {
+    private CardUtils() {
     }
 
     public static Map<Integer, Long> groupCardsByValue(List<Card> cards) {
