@@ -58,16 +58,8 @@ public class HandComparer {
         var groupedHandOneValues = CardUtils.groupCardsByValue(handOne.getCards());
         var groupedHandTwoValues = CardUtils.groupCardsByValue(handTwo.getCards());
 
-        var handOneThreeOfKindValue = groupedHandOneValues.entrySet().stream()
-                .filter(e -> e.getValue().intValue() == HandRankingEvaluator.THREE_OF_KIND)
-                .findFirst()
-                .map(Map.Entry::getKey)
-                .orElseThrow();
-        var handTwoThreeOfKindValue = groupedHandTwoValues.entrySet().stream()
-                .filter(e -> e.getValue().intValue() == HandRankingEvaluator.THREE_OF_KIND)
-                .findFirst()
-                .map(Map.Entry::getKey)
-                .orElseThrow();
+        var handOneThreeOfKindValue = getCardValueFromCardGroup(groupedHandOneValues, HandRankingEvaluator.THREE_OF_KIND);
+        var handTwoThreeOfKindValue = getCardValueFromCardGroup(groupedHandTwoValues, HandRankingEvaluator.THREE_OF_KIND);
 
         if (handOneThreeOfKindValue.equals(handTwoThreeOfKindValue)) {
             var handOneHighestKicker = groupedHandOneValues.keySet().stream()
@@ -170,29 +162,13 @@ public class HandComparer {
     private Winner compareFullHouseHands(Hand handOne, Hand handTwo) {
         var groupedHandOneValues = CardUtils.groupCardsByValue(handOne.getCards());
         var groupedHandTwoValues = CardUtils.groupCardsByValue(handTwo.getCards());
-        var highestHandOneTriple = groupedHandOneValues.entrySet().stream()
-                .filter(e -> e.getValue().intValue() == HandRankingEvaluator.THREE_OF_KIND)
-                .findFirst()
-                .map(Map.Entry::getKey)
-                .orElseThrow();
-        var highestHandTwoTriple = groupedHandTwoValues.entrySet().stream()
-                .filter(e -> e.getValue().intValue() == HandRankingEvaluator.THREE_OF_KIND)
-                .findFirst()
-                .map(Map.Entry::getKey)
-                .orElseThrow();
+        var highestHandOneTriple = getCardValueFromCardGroup(groupedHandOneValues, HandRankingEvaluator.THREE_OF_KIND);
+        var highestHandTwoTriple = getCardValueFromCardGroup(groupedHandTwoValues, HandRankingEvaluator.THREE_OF_KIND);
 
         if (highestHandOneTriple.equals(highestHandTwoTriple)) {
-            var handOnePair = groupedHandOneValues.entrySet().stream()
-                    .filter(e -> e.getValue().intValue() == HandRankingEvaluator.PAIR)
-                    .findFirst()
-                    .map(Map.Entry::getKey)
-                    .orElseThrow();
+            var handOnePair = getCardValueFromCardGroup(groupedHandOneValues, HandRankingEvaluator.PAIR);
+            var handTwoPair = getCardValueFromCardGroup(groupedHandTwoValues, HandRankingEvaluator.PAIR);
 
-            var handTwoPair = groupedHandTwoValues.entrySet().stream()
-                    .filter(e -> e.getValue().intValue() == HandRankingEvaluator.PAIR)
-                    .findFirst()
-                    .map(Map.Entry::getKey)
-                    .orElseThrow();
             return handOnePair > handTwoPair ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
         }
         return highestHandOneTriple > highestHandTwoTriple ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
@@ -203,5 +179,13 @@ public class HandComparer {
         var highestHandTwoCard = Collections.max(handTwo.getCards(), Comparator.comparing(Card::getCardsValue));
 
         return highestHandOneCard.getCardsValue() > highestHandTwoCard.getCardsValue() ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
+    }
+
+    private Integer getCardValueFromCardGroup(Map<Integer, Long> groupedHandValues, int cardGroup) {
+        return groupedHandValues.entrySet().stream()
+                .filter(e -> e.getValue().intValue() == cardGroup)
+                .findFirst()
+                .map(Map.Entry::getKey)
+                .orElseThrow();
     }
 }
