@@ -6,6 +6,7 @@ import paulius.apulskis.pokerhandscomparison.model.player.Winner;
 import paulius.apulskis.pokerhandscomparison.utils.CardUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class HandComparer {
 
@@ -28,22 +29,15 @@ public class HandComparer {
     private Winner compareFourOfKindHands(Hand handOne, Hand handTwo) {
         var groupedHandOneValues = CardUtils.groupCardsByValue(handOne.getCards());
         var groupedHandTwoValues = CardUtils.groupCardsByValue(handTwo.getCards());
-        var handOneFourOfKindValue = groupedHandOneValues.entrySet().stream()
-                .filter(e -> e.getValue() == HandRankingEvaluator.FOUR_OF_KIND)
-                .findFirst().map(Map.Entry::getKey)
-                .orElseThrow();
-        var handTwoFourOfKindValue = groupedHandTwoValues.entrySet().stream()
-                .filter(e -> e.getValue() == HandRankingEvaluator.FOUR_OF_KIND)
-                .findFirst()
-                .map(Map.Entry::getKey)
-                .orElseThrow();
+        var handOneFourOfKindValue = getCardValueFromCardGroup(groupedHandOneValues, HandRankingEvaluator.FOUR_OF_KIND);
+        var handTwoFourOfKindValue = getCardValueFromCardGroup(groupedHandTwoValues, HandRankingEvaluator.FOUR_OF_KIND);
 
         return handOneFourOfKindValue > handTwoFourOfKindValue ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
     }
 
     private Winner compareStraightHands(Hand handOne, Hand handTwo) {
-        var highestHandOneCard = CardUtils.getHighestCard(handOne.getCards());
-        var highestHandTwoCard = CardUtils.getHighestCard(handTwo.getCards());
+        var highestHandOneCard = CardUtils.getHighestCardValue(handOne.getCards());
+        var highestHandTwoCard = CardUtils.getHighestCardValue(handTwo.getCards());
 
         return highestHandOneCard > highestHandTwoCard ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
     }
@@ -64,42 +58,31 @@ public class HandComparer {
     }
 
     private Winner compareFlushHands(Hand handOne, Hand handTwo) {
-        var highestHandOneCard = CardUtils.getHighestCard(handOne.getCards());
-        var highestHandTwoCard = CardUtils.getHighestCard(handTwo.getCards());
+        var highestHandOneCard = CardUtils.getHighestCardValue(handOne.getCards());
+        var highestHandTwoCard = CardUtils.getHighestCardValue(handTwo.getCards());
 
         if (highestHandOneCard.equals(highestHandTwoCard)) {
-            var filteredHandOne = handOne.getCards().stream()
-                    .filter(card -> handTwo.getCards().stream()
-                            .noneMatch(handTwoCard -> handTwoCard.getCardsValue() == card.getCardsValue()))
-                    .max(Card::compareTo)
-                    .map(Card::getCardsValue)
-                    .orElseThrow();
-
-            var filteredHandTwo = handTwo.getCards().stream()
-                    .filter(card -> handOne.getCards().stream()
-                            .noneMatch(handTwoCard -> handTwoCard.getCardsValue() == card.getCardsValue()))
-                    .max(Card::compareTo)
-                    .map(Card::getCardsValue)
-                    .orElseThrow();
+            var filteredHandOne = getHighestKickerForFlush(handOne.getCards(), handTwo.getCards());
+            var filteredHandTwo = getHighestKickerForFlush(handTwo.getCards(), handOne.getCards());
 
             return filteredHandOne > filteredHandTwo ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
         }
         return highestHandOneCard > highestHandTwoCard ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
     }
 
+    private Integer getHighestKickerForFlush(List<Card> cards, List<Card> cardsToExclude) {
+        var filteredCardsByExcludingCards = cards.stream()
+                .filter(card -> cardsToExclude.stream().noneMatch(cardToExclude -> cardToExclude.getCardsValue() == card.getCardsValue()))
+                .collect(Collectors.toList());
+
+        return CardUtils.getHighestCardValue(filteredCardsByExcludingCards);
+    }
+
     private Winner compareTwoPairHands(Hand handOne, Hand handTwo) {
         var groupedHandOneValues = CardUtils.groupCardsByValue(handOne.getCards());
         var groupedHandTwoValues = CardUtils.groupCardsByValue(handTwo.getCards());
-        var highestHandOnePairCard = groupedHandOneValues.entrySet().stream()
-                .filter(e -> e.getValue() > 1)
-                .max(Map.Entry.comparingByKey())
-                .map(Map.Entry::getKey)
-                .orElseThrow();
-        var highestHandTwoPairCard = groupedHandTwoValues.entrySet().stream()
-                .filter(e -> e.getValue() > 1)
-                .max(Map.Entry.comparingByKey())
-                .map(Map.Entry::getKey)
-                .orElseThrow();
+        var highestHandOnePairCard = getHighestPairCardValue(groupedHandOneValues);
+        var highestHandTwoPairCard = getHighestPairCardValue(groupedHandTwoValues);
 
         if (highestHandOnePairCard.equals(highestHandTwoPairCard)) {
             var handOneKicker = getKickInTwoPair(groupedHandOneValues);
@@ -107,7 +90,16 @@ public class HandComparer {
 
             return handOneKicker > handTwoKicker ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
         }
+
         return highestHandOnePairCard > highestHandTwoPairCard ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
+    }
+
+    private Integer getHighestPairCardValue(Map<Integer, Long> groupedHandTwoValues) {
+        return groupedHandTwoValues.entrySet().stream()
+                .filter(e -> e.getValue() == HandRankingEvaluator.PAIR)
+                .max(Map.Entry.comparingByKey())
+                .map(Map.Entry::getKey)
+                .orElseThrow();
     }
 
     private Integer getKickInTwoPair(Map<Integer, Long> groupedHandOneValues) {
@@ -127,20 +119,21 @@ public class HandComparer {
         var isSamePairHands = handOnePairValue.equals(handTwoPairValue);
 
         if (isSamePairHands) {
-            var highestHandOneCard = handOne.getCards().stream()
-                    .filter(e -> e.getCardsValue() != handOnePairValue)
-                    .max(Card::compareTo)
-                    .map(Card::getCardsValue)
-                    .orElseThrow();
-            var highestHandTwoCard = handTwo.getCards().stream()
-                    .filter(e -> e.getCardsValue() != handTwoPairValue)
-                    .max(Card::compareTo)
-                    .map(Card::getCardsValue)
-                    .orElseThrow();
+            var highestHandOneCard = getHighestCardExcludingPairCardValue(handOne, handOnePairValue);
+            var highestHandTwoCard = getHighestCardExcludingPairCardValue(handTwo, handTwoPairValue);
 
             return highestHandOneCard > highestHandTwoCard ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
         }
+
         return handOnePairValue > handTwoPairValue ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
+    }
+
+    private int getHighestCardExcludingPairCardValue(Hand handOne, int handOnePairValue) {
+        var cards = handOne.getCards().stream()
+                .filter(e -> e.getCardsValue() != handOnePairValue)
+                .collect(Collectors.toList());
+
+        return CardUtils.getHighestCardValue(cards);
     }
 
     private Winner compareFullHouseHands(Hand handOne, Hand handTwo) {

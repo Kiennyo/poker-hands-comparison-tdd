@@ -28,7 +28,7 @@ public class CardUtils {
         return Card.createCard(CardValue.getCardValueByDisplayValue(valueSuite[0]), CardSuite.getCardSuite(valueSuite[1]));
     }
 
-    public static Integer getHighestCard(List<Card> cards) {
+    public static Integer getHighestCardValue(List<Card> cards) {
         return cards.stream()
                 .max(Card::compareTo)
                 .map(Card::getCardsValue)
