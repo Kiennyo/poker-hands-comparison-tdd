@@ -42,14 +42,8 @@ public class HandComparer {
     }
 
     private Winner compareStraightHands(Hand handOne, Hand handTwo) {
-        var highestHandOneCard = handOne.getCards().stream()
-                .max(Card::compareTo)
-                .map(Card::getCardsValue)
-                .orElseThrow();
-        var highestHandTwoCard = handTwo.getCards().stream()
-                .max(Card::compareTo)
-                .map(Card::getCardsValue)
-                .orElseThrow();
+        var highestHandOneCard = CardUtils.getHighestCard(handOne.getCards());
+        var highestHandTwoCard = CardUtils.getHighestCard(handTwo.getCards());
 
         return highestHandOneCard > highestHandTwoCard ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
     }
@@ -76,14 +70,8 @@ public class HandComparer {
     }
 
     private Winner compareFlushHands(Hand handOne, Hand handTwo) {
-        var highestHandOneCard = handOne.getCards().stream()
-                .max(Card::compareTo)
-                .map(Card::getCardsValue)
-                .orElseThrow();
-        var highestHandTwoCard = handTwo.getCards().stream()
-                .max(Card::compareTo)
-                .map(Card::getCardsValue)
-                .orElseThrow();
+        var highestHandOneCard = CardUtils.getHighestCard(handOne.getCards());
+        var highestHandTwoCard = CardUtils.getHighestCard(handTwo.getCards());
 
         if (highestHandOneCard.equals(highestHandTwoCard)) {
             var filteredHandOne = handOne.getCards().stream()
@@ -127,20 +115,11 @@ public class HandComparer {
         return highestHandOnePairCard > highestHandTwoPairCard ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
     }
 
-    private static Winner comparePairHands(Hand handOne, Hand handTwo) {
+    private Winner comparePairHands(Hand handOne, Hand handTwo) {
         var groupedHandOneValues = CardUtils.groupCardsByValue(handOne.getCards());
         var groupedHandTwoValues = CardUtils.groupCardsByValue(handTwo.getCards());
-        var handOnePairValue = groupedHandOneValues.entrySet().stream()
-                .filter(e -> e.getValue().intValue() == HandRankingEvaluator.PAIR)
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElseThrow();
-        var handTwoPairValue = groupedHandTwoValues.entrySet().stream()
-                .filter(e -> e.getValue().intValue() == HandRankingEvaluator.PAIR)
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElseThrow();
-
+        var handOnePairValue = getCardValueFromCardGroup(groupedHandOneValues, HandRankingEvaluator.PAIR);
+        var handTwoPairValue = getCardValueFromCardGroup(groupedHandTwoValues, HandRankingEvaluator.PAIR);
         var isSamePairHands = handOnePairValue.equals(handTwoPairValue);
 
         if (isSamePairHands) {
@@ -166,10 +145,10 @@ public class HandComparer {
         var highestHandTwoTriple = getCardValueFromCardGroup(groupedHandTwoValues, HandRankingEvaluator.THREE_OF_KIND);
 
         if (highestHandOneTriple.equals(highestHandTwoTriple)) {
-            var handOnePair = getCardValueFromCardGroup(groupedHandOneValues, HandRankingEvaluator.PAIR);
-            var handTwoPair = getCardValueFromCardGroup(groupedHandTwoValues, HandRankingEvaluator.PAIR);
+            var handOnePairValue = getCardValueFromCardGroup(groupedHandOneValues, HandRankingEvaluator.PAIR);
+            var handTwoPairValue = getCardValueFromCardGroup(groupedHandTwoValues, HandRankingEvaluator.PAIR);
 
-            return handOnePair > handTwoPair ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
+            return handOnePairValue > handTwoPairValue ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
         }
         return highestHandOneTriple > highestHandTwoTriple ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
     }

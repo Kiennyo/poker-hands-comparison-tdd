@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 public class HandRankingEvaluator {
 
     public static final int PAIR = 2;
-    private static final int TWO_PAIR = 2;
     public static final int FOUR_OF_KIND = 4;
     public static final int THREE_OF_KIND = 3;
+    private static final int TWO_PAIR = 2;
     private static final int FULL_HOUSE_GROUPS = 2;
 
     public HandRanking evaluate(Hand hand) {
