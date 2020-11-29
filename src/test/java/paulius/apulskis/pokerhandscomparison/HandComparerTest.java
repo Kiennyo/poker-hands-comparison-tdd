@@ -2,6 +2,7 @@ package paulius.apulskis.pokerhandscomparison;
 
 import org.junit.Test;
 import paulius.apulskis.pokerhandscomparison.model.hand.HandRanking;
+import paulius.apulskis.pokerhandscomparison.model.player.Winner;
 import paulius.apulskis.pokerhandscomparison.utils.values.Hands;
 
 import static org.junit.Assert.assertEquals;
@@ -15,9 +16,9 @@ public class HandComparerTest {
         var hand1 = Hands.highCard1().setHandRanking(HandRanking.HIGH_CARD);
         var hand2 = Hands.highCard2().setHandRanking(HandRanking.HIGH_CARD);
 
-        var highestHand = handComparer.compareSameHands(hand1, hand2);
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
 
-        assertEquals(HandComparer.PLAYER_ONE_WIN, highestHand);
+        assertEquals(Winner.PLAYER_ONE_WIN, highestHand);
     }
 
     @Test
@@ -25,9 +26,9 @@ public class HandComparerTest {
         var hand1 = Hands.pair1().setHandRanking(HandRanking.PAIR);
         var hand2 = Hands.pair2().setHandRanking(HandRanking.PAIR);
 
-        var highestHand = handComparer.compareSameHands(hand1, hand2);
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
 
-        assertEquals(HandComparer.PLAYER_ONE_WIN, highestHand);
+        assertEquals(Winner.PLAYER_ONE_WIN, highestHand);
     }
 
     @Test
@@ -35,9 +36,9 @@ public class HandComparerTest {
         var hand1 = Hands.pair2().setHandRanking(HandRanking.PAIR);
         var hand2 = Hands.pair3().setHandRanking(HandRanking.PAIR);
 
-        var highestHand = handComparer.compareSameHands(hand1, hand2);
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
 
-        assertEquals(HandComparer.PLAYER_TWO_WIN, highestHand);
+        assertEquals(Winner.PLAYER_TWO_WIN, highestHand);
     }
 
     @Test
@@ -45,9 +46,9 @@ public class HandComparerTest {
         var hand1 = Hands.twoPair1().setHandRanking(HandRanking.TWO_PAIR);
         var hand2 = Hands.twoPair2().setHandRanking(HandRanking.TWO_PAIR);
 
-        var highestHand = handComparer.compareSameHands(hand1, hand2);
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
 
-        assertEquals(HandComparer.PLAYER_ONE_WIN, highestHand);
+        assertEquals(Winner.PLAYER_ONE_WIN, highestHand);
     }
 
     @Test
@@ -55,9 +56,9 @@ public class HandComparerTest {
         var hand1 = Hands.twoPair2().setHandRanking(HandRanking.TWO_PAIR);
         var hand2 = Hands.twoPair3().setHandRanking(HandRanking.TWO_PAIR);
 
-        var highestHand = handComparer.compareSameHands(hand1, hand2);
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
 
-        assertEquals(HandComparer.PLAYER_TWO_WIN, highestHand);
+        assertEquals(Winner.PLAYER_TWO_WIN, highestHand);
     }
 
     @Test
@@ -65,9 +66,9 @@ public class HandComparerTest {
         var hand1 = Hands.threeOfKind1().setHandRanking(HandRanking.THREE_OF_A_KIND);
         var hand2 = Hands.threeOfKind2().setHandRanking(HandRanking.THREE_OF_A_KIND);
 
-        var highestHand = handComparer.compareSameHands(hand1, hand2);
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
 
-        assertEquals(HandComparer.PLAYER_ONE_WIN, highestHand);
+        assertEquals(Winner.PLAYER_ONE_WIN, highestHand);
     }
 
     @Test
@@ -75,9 +76,9 @@ public class HandComparerTest {
         var hand1 = Hands.threeOfKind2().setHandRanking(HandRanking.THREE_OF_A_KIND);
         var hand2 = Hands.threeOfKind3().setHandRanking(HandRanking.THREE_OF_A_KIND);
 
-        var highestHand = handComparer.compareSameHands(hand1, hand2);
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
 
-        assertEquals(HandComparer.PLAYER_TWO_WIN, highestHand);
+        assertEquals(Winner.PLAYER_TWO_WIN, highestHand);
     }
 
     @Test
@@ -85,9 +86,9 @@ public class HandComparerTest {
         var hand1 = Hands.straight().setHandRanking(HandRanking.STRAIGHT);
         var hand2 = Hands.straight1().setHandRanking(HandRanking.STRAIGHT);
 
-        var highestHand = handComparer.compareSameHands(hand1, hand2);
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
 
-        assertEquals(HandComparer.PLAYER_TWO_WIN, highestHand);
+        assertEquals(Winner.PLAYER_TWO_WIN, highestHand);
     }
 
     @Test
@@ -95,9 +96,9 @@ public class HandComparerTest {
         var hand1 = Hands.flush().setHandRanking(HandRanking.FLUSH);
         var hand2 = Hands.flush2().setHandRanking(HandRanking.FLUSH);
 
-        var highestHand = handComparer.compareSameHands(hand1, hand2);
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
 
-        assertEquals(HandComparer.PLAYER_ONE_WIN, highestHand);
+        assertEquals(Winner.PLAYER_ONE_WIN, highestHand);
     }
 
     @Test
@@ -105,9 +106,9 @@ public class HandComparerTest {
         var hand1 = Hands.flush().setHandRanking(HandRanking.FLUSH);
         var hand2 = Hands.flush1().setHandRanking(HandRanking.FLUSH);
 
-        var highestHand = handComparer.compareSameHands(hand1, hand2);
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
 
-        assertEquals(HandComparer.PLAYER_TWO_WIN, highestHand);
+        assertEquals(Winner.PLAYER_TWO_WIN, highestHand);
     }
 
     @Test
@@ -115,9 +116,9 @@ public class HandComparerTest {
         var hand1 = Hands.fullHouse().setHandRanking(HandRanking.FULL_HOUSE);
         var hand2 = Hands.fullHouse1().setHandRanking(HandRanking.FULL_HOUSE);
 
-        var highestHand = handComparer.compareSameHands(hand1, hand2);
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
 
-        assertEquals(HandComparer.PLAYER_ONE_WIN, highestHand);
+        assertEquals(Winner.PLAYER_ONE_WIN, highestHand);
     }
 
     @Test
@@ -125,9 +126,9 @@ public class HandComparerTest {
         var hand1 = Hands.fullHouse1().setHandRanking(HandRanking.FULL_HOUSE);
         var hand2 = Hands.fullHouse2().setHandRanking(HandRanking.FULL_HOUSE);
 
-        var highestHand = handComparer.compareSameHands(hand1, hand2);
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
 
-        assertEquals(HandComparer.PLAYER_TWO_WIN, highestHand);
+        assertEquals(Winner.PLAYER_TWO_WIN, highestHand);
     }
 
     @Test
@@ -135,9 +136,9 @@ public class HandComparerTest {
         var hand1 = Hands.fourOfKind().setHandRanking(HandRanking.FOUR_OF_A_KIND);
         var hand2 = Hands.fourOfKind1().setHandRanking(HandRanking.FOUR_OF_A_KIND);
 
-        var highestHand = handComparer.compareSameHands(hand1, hand2);
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
 
-        assertEquals(HandComparer.PLAYER_ONE_WIN, highestHand);
+        assertEquals(Winner.PLAYER_ONE_WIN, highestHand);
     }
 
     @Test
@@ -145,8 +146,8 @@ public class HandComparerTest {
         var hand1 = Hands.straightFlush().setHandRanking(HandRanking.STRAIGHT_FLUSH);
         var hand2 = Hands.straightFlush1().setHandRanking(HandRanking.STRAIGHT_FLUSH);
 
-        var highestHand = handComparer.compareSameHands(hand1, hand2);
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
 
-        assertEquals(HandComparer.PLAYER_TWO_WIN, highestHand);
+        assertEquals(Winner.PLAYER_TWO_WIN, highestHand);
     }
 }

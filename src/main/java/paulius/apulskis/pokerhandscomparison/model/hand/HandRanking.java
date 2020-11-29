@@ -12,13 +12,13 @@ public enum HandRanking {
     PAIR(9),
     HIGH_CARD(10);
 
-    private final int ranking;
+    private final int rankingValue;
 
-    HandRanking(int ranking) {
-        this.ranking = ranking;
+    HandRanking(int rankingValue) {
+        this.rankingValue = rankingValue;
     }
 
-    public int getRanking() {
-        return ranking;
+    public int getRankingValue() {
+        return rankingValue;
     }
 }

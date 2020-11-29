@@ -1,12 +1,8 @@
 package paulius.apulskis.pokerhandscomparison.model.hand;
 
-import paulius.apulskis.pokerhandscomparison.model.card.Card;
-import paulius.apulskis.pokerhandscomparison.model.card.CardSuite;
-import paulius.apulskis.pokerhandscomparison.model.card.CardValue;
+import paulius.apulskis.pokerhandscomparison.utils.CardUtils;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class HandPair {
 
@@ -31,15 +27,6 @@ public class HandPair {
         var playerOneCardStrings = Arrays.copyOfRange(cards, 0, 5);
         var playerTwoCardStrings = Arrays.copyOfRange(cards, 5, 10);
 
-        return new HandPair(Hand.createHand(getCollect(playerOneCardStrings)), Hand.createHand(getCollect(playerTwoCardStrings)));
-    }
-
-    private static List<Card> getCollect(String[] playerOneCardStrings) {
-        return Arrays.stream(playerOneCardStrings).map(HandPair::getCard).collect(Collectors.toList());
-    }
-
-    private static Card getCard(String cardString) {
-        String[] valueSuite = cardString.split("");
-        return Card.createCard(CardValue.getCardValueByDisplayValue(valueSuite[0]), CardSuite.getCardSuite(valueSuite[1]));
+        return new HandPair(Hand.createHand(CardUtils.toCards(playerOneCardStrings)), Hand.createHand(CardUtils.toCards(playerTwoCardStrings)));
     }
 }
