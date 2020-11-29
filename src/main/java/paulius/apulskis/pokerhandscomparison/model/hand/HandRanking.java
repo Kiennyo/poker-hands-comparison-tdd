@@ -17,4 +17,8 @@ public enum HandRanking {
     HandRanking(int ranking) {
         this.ranking = ranking;
     }
+
+    public int getRanking() {
+        return ranking;
+    }
 }
