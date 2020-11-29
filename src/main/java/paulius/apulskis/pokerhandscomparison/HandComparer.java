@@ -51,20 +51,14 @@ public class HandComparer {
     private Winner compareThreeOfKindHands(Hand handOne, Hand handTwo) {
         var groupedHandOneValues = CardUtils.groupCardsByValue(handOne.getCards());
         var groupedHandTwoValues = CardUtils.groupCardsByValue(handTwo.getCards());
-
         var handOneThreeOfKindValue = getCardValueFromCardGroup(groupedHandOneValues, HandRankingEvaluator.THREE_OF_KIND);
         var handTwoThreeOfKindValue = getCardValueFromCardGroup(groupedHandTwoValues, HandRankingEvaluator.THREE_OF_KIND);
 
         if (handOneThreeOfKindValue.equals(handTwoThreeOfKindValue)) {
-            var handOneHighestKicker = groupedHandOneValues.keySet().stream()
-                    .filter(e -> !e.equals(handOneThreeOfKindValue))
-                    .max(Integer::compareTo)
-                    .orElseThrow();
-            var handTwoHighestKicker = groupedHandTwoValues.keySet().stream()
-                    .filter(e -> !e.equals(handTwoThreeOfKindValue))
-                    .max(Integer::compareTo)
-                    .orElseThrow();
-            return handOneHighestKicker > handTwoHighestKicker ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
+            var handOneKicker = getKickerInThreeOfKind(groupedHandOneValues, handOneThreeOfKindValue);
+            var handTwoKicker = getKickerInThreeOfKind(groupedHandTwoValues, handTwoThreeOfKindValue);
+
+            return handOneKicker > handTwoKicker ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
         }
         return handOneThreeOfKindValue > handTwoThreeOfKindValue ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
     }
@@ -108,11 +102,21 @@ public class HandComparer {
                 .orElseThrow();
 
         if (highestHandOnePairCard.equals(highestHandTwoPairCard)) {
-            var handOneKicker = groupedHandOneValues.entrySet().stream().filter(e -> e.getValue() == 1).findFirst().map(Map.Entry::getKey).orElseThrow();
-            var handTwoKicker = groupedHandTwoValues.entrySet().stream().filter(e -> e.getValue() == 1).findFirst().map(Map.Entry::getKey).orElseThrow();
+            var handOneKicker = getKickInTwoPair(groupedHandOneValues);
+            var handTwoKicker = getKickInTwoPair(groupedHandTwoValues);
+
             return handOneKicker > handTwoKicker ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
         }
         return highestHandOnePairCard > highestHandTwoPairCard ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
+    }
+
+    private Integer getKickInTwoPair(Map<Integer, Long> groupedHandOneValues) {
+        var countOfGroup = 1;
+        return groupedHandOneValues.entrySet().stream()
+                .filter(e -> e.getValue() == countOfGroup)
+                .findFirst()
+                .map(Map.Entry::getKey)
+                .orElseThrow();
     }
 
     private Winner comparePairHands(Hand handOne, Hand handTwo) {
@@ -133,6 +137,7 @@ public class HandComparer {
                     .max(Card::compareTo)
                     .map(Card::getCardsValue)
                     .orElseThrow();
+
             return highestHandOneCard > highestHandTwoCard ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
         }
         return handOnePairValue > handTwoPairValue ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
@@ -165,6 +170,13 @@ public class HandComparer {
                 .filter(e -> e.getValue().intValue() == cardGroup)
                 .findFirst()
                 .map(Map.Entry::getKey)
+                .orElseThrow();
+    }
+
+    private Integer getKickerInThreeOfKind(Map<Integer, Long> groupedHandTwoValues, Integer handTwoThreeOfKindValue) {
+        return groupedHandTwoValues.keySet().stream()
+                .filter(e -> !e.equals(handTwoThreeOfKindValue))
+                .max(Integer::compareTo)
                 .orElseThrow();
     }
 }
