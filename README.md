@@ -2,7 +2,7 @@
 ``gradlew build jar`` <br />
 ``java -jar build/libs/poker-hands-comparison-0.0.1-SNAPSHOT.jar``
 
-##Task
+## Task
 
 <p>In the card game poker, a hand consists of five cards and are ranked, from lowest to highest, in the following way:</p>
 <ul><li><b>High Card</b>: Highest value card.</li>
