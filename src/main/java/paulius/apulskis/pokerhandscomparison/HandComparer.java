@@ -2,6 +2,7 @@ package paulius.apulskis.pokerhandscomparison;
 
 import paulius.apulskis.pokerhandscomparison.model.card.Card;
 import paulius.apulskis.pokerhandscomparison.model.hand.Hand;
+import paulius.apulskis.pokerhandscomparison.model.hand.HandRanking;
 import paulius.apulskis.pokerhandscomparison.model.player.Winner;
 import paulius.apulskis.pokerhandscomparison.utils.CardUtils;
 
@@ -61,17 +62,31 @@ public class HandComparer {
     private Winner compareTwoPairHands(Hand handOne, Hand handTwo) {
         var groupedHandOneValues = CardUtils.groupCardsByValue(handOne.getCards());
         var groupedHandTwoValues = CardUtils.groupCardsByValue(handTwo.getCards());
+
         var highestHandOnePairCard = getHighestPairCardValue(groupedHandOneValues);
         var highestHandTwoPairCard = getHighestPairCardValue(groupedHandTwoValues);
+        var lowestHandOnePairCard = getLowestPairCardValue(groupedHandOneValues, highestHandOnePairCard);
+        var lowestHandTwoPairCard = getLowestPairCardValue(groupedHandTwoValues, highestHandTwoPairCard);
 
-        if (highestHandOnePairCard.equals(highestHandTwoPairCard)) {
+
+        if (highestHandOnePairCard.equals(highestHandTwoPairCard) && lowestHandOnePairCard.equals(lowestHandTwoPairCard)) {
             var handOneKicker = getKickInTwoPair(groupedHandOneValues);
             var handTwoKicker = getKickInTwoPair(groupedHandTwoValues);
 
             return handOneKicker > handTwoKicker ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
+        } else if(!lowestHandOnePairCard.equals(lowestHandTwoPairCard)) {
+            return lowestHandOnePairCard > lowestHandTwoPairCard ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
         }
 
         return highestHandOnePairCard > highestHandTwoPairCard ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
+    }
+
+    private Integer getLowestPairCardValue(Map<Integer, Long> groupedHandValues, int highestHandPairCard) {
+        return groupedHandValues.entrySet().stream()
+                .filter(e -> e.getValue().intValue() == HandRankingEvaluator.PAIR && e.getKey() != highestHandPairCard)
+                .findFirst()
+                .map(Map.Entry::getKey)
+                .orElseThrow();
     }
 
     private Integer getKickInTwoPair(Map<Integer, Long> groupedHandOneValues) {

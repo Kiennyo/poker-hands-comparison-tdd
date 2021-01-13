@@ -62,6 +62,16 @@ public class HandComparerTest {
     }
 
     @Test
+    public void compareSameHands_sameTwoPairXX() {
+        var hand1 = Hands.twoPair3().setHandRanking(HandRanking.TWO_PAIR);
+        var hand2 = Hands.twoPair4().setHandRanking(HandRanking.TWO_PAIR);
+
+        Winner highestHand = handComparer.compareSameHands(hand1, hand2);
+
+        assertEquals(Winner.PLAYER_TWO_WIN, highestHand);
+    }
+
+    @Test
     public void compareSameHands_threeOfKind() {
         var hand1 = Hands.threeOfKind1().setHandRanking(HandRanking.THREE_OF_A_KIND);
         var hand2 = Hands.threeOfKind2().setHandRanking(HandRanking.THREE_OF_A_KIND);

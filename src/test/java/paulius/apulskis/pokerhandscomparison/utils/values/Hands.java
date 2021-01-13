@@ -201,6 +201,16 @@ public class Hands {
         ));
     }
 
+    public static Hand twoPair4() {
+        return createHand(Arrays.asList(
+                createCard(CardValue.JACK, CardSuite.CLUBS),
+                createCard(CardValue.JACK, CardSuite.HEARTS),
+                createCard(CardValue.THREE, CardSuite.DIAMONDS),
+                createCard(CardValue.THREE, CardSuite.HEARTS),
+                createCard(CardValue.TWO, CardSuite.HEARTS)
+        ));
+    }
+
     public static Hand pair1() {
         return createHand(Arrays.asList(
                 createCard(CardValue.KING, CardSuite.SPADES),

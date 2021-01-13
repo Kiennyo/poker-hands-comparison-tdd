@@ -23,7 +23,7 @@ public class GameResolver {
         var playerOneHandRanking = playerOneHand.getHandRanking();
         var playerTwoHandRanking = playerTwoHand.getHandRanking();
 
-        if (playerOneHandRanking.getRankingValue() == playerTwoHandRanking.getRankingValue()) {
+        if (playerOneHandRanking.equals(playerTwoHandRanking)) {
             return handComparer.compareSameHands(playerOneHand, playerTwoHand);
         }
         return playerOneHandRanking.getRankingValue() < playerTwoHandRanking.getRankingValue() ? Winner.PLAYER_ONE_WIN : Winner.PLAYER_TWO_WIN;
